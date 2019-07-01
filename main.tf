@@ -3,45 +3,17 @@ provider "aws" {
   region = "${var.region}"
 }
 
-locals {
-  create_vpc = "${var.vpc_id == "" ? 1 : 0}"
-}
-
 data "aws_vpc" "vpc" {
-  count = "${1 - local.create_vpc}"
-
   id = "${var.vpc_id}"
 }
 
-# resource "aws_vpc" "subnet" {
-#   count = "${local.create_vpc}"
-
-#   cidr_block = "${var.cidr}"
-
-#   tags = {
-#     Name = "main"
-#   }
-# }
-
-# resource "aws_internet_gateway" "selected" {
-#   count = "${1 - local.create_vpc}"
-
-#   vpc_id = "${data.aws_vpc.selected[count.index].id}"
-# }
-
-# resource "aws_internet_gateway" "this" {
-#   count = "${local.create_vpc}"
-
-#   vpc_id = "${aws_vpc.this[count.index].id}"
-# }
-
 # Define the public subnet
 resource "aws_subnet" "subnet" {
-  vpc_id = "${data.aws_vpc.vpc[0].id}"
+  vpc_id = "${data.aws_vpc.vpc.id}"
   cidr_block = "${var.subnet_cidr}"
 
   tags = {
-    Name = "Web Public Subnet"
+    Name = "Tank Subnet"
   }
 }
 
