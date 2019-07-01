@@ -1,6 +1,6 @@
 [all:vars]
 ansible_user=ubuntu
-ansible_ssh_private_key_file=/var/ans/master_key
+#ansible_ssh_private_key_file=/var/ans/master_key
 ansible_python_interpreter=/usr/bin/python3
 docker_username=${docker_username}
 docker_password=${docker_password}
