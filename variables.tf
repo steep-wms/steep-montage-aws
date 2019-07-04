@@ -44,6 +44,10 @@ variable "node_count" {
   default = "3"
 }
 
+variable "number_of_cassandra_seeds" {
+  default = "2"
+}
+
 variable "disk_size" {
   default = "10"
 }
