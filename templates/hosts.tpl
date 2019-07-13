@@ -4,6 +4,10 @@ ansible_user=ubuntu
 ansible_python_interpreter=/usr/bin/python3
 docker_username=${docker_username}
 docker_password=${docker_password}
+setupElk=False
+teardownElk=False
+pruneData=True
+cassandra_data_dir=${ cassandra_data_dir }
 
 [proxy_nodes]
 ${ proxy_node }
@@ -20,7 +24,7 @@ cassandra_cluster_name=tankstore
 number_of_seeds=${number_of_seeds}
 
 [cassandra_nodes]
-${ nodes }
+${ cassandra_nodes }
 
 [tank_nodes]
-${ nodes }
+${ tank_nodes }

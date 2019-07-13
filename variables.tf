@@ -1,8 +1,3 @@
-variable "vpc_id" {
-  description = "Existing VPC to use (specify this, if you don't want to create new VPC)"
-  default     = "vpc-0df0c95aa69714e16"
-}
-
 variable "cidr" {
   description = "The CIDR block for the VPC."
   default     = "10.0.0.0/16"
@@ -13,11 +8,15 @@ variable "subnet_cidr" {
   default     = "10.0.2.0/24"
 }
 
-variable "ec2_instance_prefix" {
+variable "ec2_tank_instance_prefix" {
   description = "Name prefix for ec2 instances"
   default = "tank"
 }
 
+variable "ec2_cassandra_instance_prefix" {
+  description = "Name prefix for ec2 instances"
+  default = "cassandra"
+}
 variable "region" {
   default = "eu-central-1"
 }
@@ -31,7 +30,15 @@ variable "aws_profile" {
   default = "default"
 }
 
-variable "instance_type" {
+variable "gateway_instance_type" {
+  default = "m5.xlarge"
+}
+
+variable "tank_instance_type" {
+  default = "m5.xlarge"
+}
+
+variable "cassandra_instance_type" {
   default = "m5.xlarge"
 }
 
@@ -40,7 +47,11 @@ variable "ami_id" {
   default = "ami-090f10efc254eaf55"
 }
 
-variable "node_count" {
+variable "tank_node_count" {
+  default = "3"
+}
+
+variable "cassandra_node_count" {
   default = "3"
 }
 
@@ -48,7 +59,11 @@ variable "number_of_cassandra_seeds" {
   default = "2"
 }
 
-variable "disk_size" {
+variable "tank_disk_size" {
+  default = "10"
+}
+
+variable "cassandra_disk_size" {
   default = "10"
 }
 

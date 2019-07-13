@@ -1,7 +1,8 @@
-# vpc_id = "vpc-9651acf1"
 aws_profile = ""
 keypair = ""
-instance_type = "t2.micro"
+gateway_instance_type = "t2.large"
+tank_instance_type = "t2.large"
+cassandra_instance_type = "t2.large"
 docker_username = ""
 docker_password = ""
 
