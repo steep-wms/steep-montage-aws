@@ -15,3 +15,4 @@ The following steps are needed to setup a Tank database:
 * Wait until instances are running
 * `ansible-playbook -i ./tank-ansible/aws-host tank-ansible/site.yml` to provision tank and needed components on nodes.
 * A simple NGINX load balancer is then running on the first EC2 instance.
+* `terraform state show aws_instance.gateway` prints the state including the FQDN (public_dns) of the public endpoint.
