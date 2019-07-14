@@ -144,7 +144,7 @@ resource "aws_instance" "tank" {
     Name = "${var.ec2_tank_instance_prefix}-${count.index}"
   }
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   subnet_id = "${aws_subnet.tank_subnet.id}"
 }
 
@@ -159,6 +159,6 @@ resource "aws_instance" "cassandra" {
   user_data = "${file("files/attach_ebs.sh")}"
   
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   subnet_id = "${aws_subnet.tank_subnet.id}"
 }
