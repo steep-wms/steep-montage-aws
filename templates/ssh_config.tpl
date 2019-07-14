@@ -9,5 +9,4 @@ Host ${ bastion_node }
   IdentityFile ${ ssh_key }
   User ${ ssh_username }
   ControlMaster auto
-  ControlPath ~/.ssh/ansible-%r@%h:%p
   ControlPersist 5m
