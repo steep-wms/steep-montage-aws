@@ -25,6 +25,11 @@ variable "keypair" {
   description = "Keypair to use for EC2 Instances"
 }
 
+variable "keyfile" {
+  description = "Private key to use for ssh auth"
+  default = "~/.ssh/id_rsa"
+}
+
 variable "aws_profile" {
   description = "Local aws profile to use for provisioning resoources"
   default = "default"
