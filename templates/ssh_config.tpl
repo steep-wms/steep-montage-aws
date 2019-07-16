@@ -3,7 +3,7 @@ Host *
 
 Host ${ network }
   IdentityFile ${ ssh_key }
-  ProxyCommand ssh ${ ssh_username }@${ bastion_node } -W %h:%p
+  ProxyCommand ssh ${ ssh_username }@${ bastion_node } -o StrictHostKeyChecking=no -W %h:%p
 
 Host ${ bastion_node }
   IdentityFile ${ ssh_key }
