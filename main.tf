@@ -185,6 +185,11 @@ resource "aws_instance" "gateway" {
     delete_on_termination = true
   }
 
+  ephemeral_block_device {
+    no_device = true
+    device_name = "/dev/sda"
+  }
+
   vpc_security_group_ids = [ "${aws_security_group.http.id}", "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = true
   subnet_id = "${aws_subnet.tank_public_subnet.id}"
@@ -203,6 +208,11 @@ resource "aws_instance" "tank" {
     volume_type = "standard"
     volume_size = "${var.tank_disk_size}"
     delete_on_termination = true
+  }
+
+  ephemeral_block_device {
+    no_device = true
+    device_name = "/dev/sda"
   }
 
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
