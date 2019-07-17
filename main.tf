@@ -36,6 +36,10 @@ resource "aws_subnet" "tank_public_subnet" {
 resource "aws_eip" "nat" {
   depends_on = ["aws_internet_gateway.tank_gateway"]
   vpc      = true
+
+  tags = {
+    Name = "Tank NAT EIP"
+  }
 }
 
 resource "aws_nat_gateway" "tank_gateway" {
@@ -174,6 +178,13 @@ resource "aws_instance" "gateway" {
   tags = {
     Name = "tank-gateway"
   }
+  
+  root_block_device {
+    volume_type = "standard"
+    volume_size = 50
+    delete_on_termination = true
+  }
+
   vpc_security_group_ids = [ "${aws_security_group.http.id}", "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = true
   subnet_id = "${aws_subnet.tank_public_subnet.id}"
@@ -187,6 +198,13 @@ resource "aws_instance" "tank" {
   tags = {
     Name = "${var.ec2_tank_instance_prefix}-${count.index}"
   }
+
+  root_block_device {
+    volume_type = "standard"
+    volume_size = "${var.tank_disk_size}"
+    delete_on_termination = true
+  }
+
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
   subnet_id = "${aws_subnet.tank_private_subnet.id}"
@@ -200,7 +218,7 @@ resource "aws_instance" "cassandra" {
   tags = {
     Name = "${var.ec2_cassandra_instance_prefix}-${count.index}"
   }
-  user_data = "${file("files/attach_ebs.sh")}"
+  # user_data = "${file("files/attach_ebs.sh")}"
   
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
