@@ -8,6 +8,7 @@ data  "template_file" "aws" {
         docker_username = var.docker_username
         docker_password = var.docker_password
         cassandra_data_dir = "/opt/data/db"
+        bastion_node = aws_instance.gateway.public_dns
     }
 }
 

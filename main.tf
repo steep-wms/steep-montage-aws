@@ -12,13 +12,38 @@ resource "aws_vpc" "tank_vpc" {
 }
 
 # Define the public subnet
-resource "aws_subnet" "tank_subnet" {
+resource "aws_subnet" "tank_private_subnet" {
   vpc_id = "${aws_vpc.tank_vpc.id}"
-  cidr_block = "${var.subnet_cidr}"
+  cidr_block = "${var.private_subnet_cidr}"
   availability_zone = "${var.region}a"
 
   tags = {
-    Name = "Tank Subnet"
+    Name = "Tank Private Subnet"
+  }
+}
+
+# Define the public subnet
+resource "aws_subnet" "tank_public_subnet" {
+  vpc_id = "${aws_vpc.tank_vpc.id}"
+  cidr_block = "${var.public_subnet_cidr}"
+  availability_zone = "${var.region}a"
+
+  tags = {
+    Name = "Tank Public Subnet"
+  }
+}
+
+resource "aws_eip" "nat" {
+  depends_on = ["aws_internet_gateway.tank_gateway"]
+  vpc      = true
+}
+
+resource "aws_nat_gateway" "tank_gateway" {
+  subnet_id = "${aws_subnet.tank_public_subnet.id}"
+  allocation_id = "${aws_eip.nat.id}"
+
+  tags = {
+    Name = "Tank VPC IGW"
   }
 }
 
@@ -28,6 +53,25 @@ resource "aws_internet_gateway" "tank_gateway" {
   tags = {
     Name = "Tank VPC IGW"
   }
+}
+
+resource "aws_route_table" "tank_private_rt" {
+  vpc_id = "${aws_vpc.tank_vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.tank_gateway.id}"
+  }
+
+  tags = {
+    Name = "Private Subnet RT"
+  }
+}
+
+# Assign the route table to the public Subnet
+resource "aws_route_table_association" "tank_private_rt" {
+  subnet_id = "${aws_subnet.tank_private_subnet.id}"
+  route_table_id = "${aws_route_table.tank_private_rt.id}"
 }
 
 resource "aws_route_table" "tank_public_rt" {
@@ -45,7 +89,7 @@ resource "aws_route_table" "tank_public_rt" {
 
 # Assign the route table to the public Subnet
 resource "aws_route_table_association" "tank_public_rt" {
-  subnet_id = "${aws_subnet.tank_subnet.id}"
+  subnet_id = "${aws_subnet.tank_public_subnet.id}"
   route_table_id = "${aws_route_table.tank_public_rt.id}"
 }
 
@@ -89,7 +133,7 @@ resource "aws_security_group" "ssh" {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    cidr_blocks     = ["${var.subnet_cidr}"]
+    cidr_blocks     = ["${var.cidr}"]
   }
 
   egress {
@@ -132,7 +176,7 @@ resource "aws_instance" "gateway" {
   }
   vpc_security_group_ids = [ "${aws_security_group.http.id}", "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = true
-  subnet_id = "${aws_subnet.tank_subnet.id}"
+  subnet_id = "${aws_subnet.tank_public_subnet.id}"
 }
 
 resource "aws_instance" "tank" {
@@ -145,7 +189,7 @@ resource "aws_instance" "tank" {
   }
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
-  subnet_id = "${aws_subnet.tank_subnet.id}"
+  subnet_id = "${aws_subnet.tank_private_subnet.id}"
 }
 
 resource "aws_instance" "cassandra" {
@@ -160,5 +204,5 @@ resource "aws_instance" "cassandra" {
   
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
-  subnet_id = "${aws_subnet.tank_subnet.id}"
+  subnet_id = "${aws_subnet.tank_private_subnet.id}"
 }

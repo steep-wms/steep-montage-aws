@@ -28,3 +28,8 @@ ${ cassandra_nodes }
 
 [tank_nodes]
 ${ tank_nodes }
+
+
+[tank_nodes:vars]
+navigator_config_file=/opt/navigator/config.json
+proxy_node_public_ip=${ bastion_node }

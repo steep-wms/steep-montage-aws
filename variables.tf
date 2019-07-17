@@ -3,9 +3,14 @@ variable "cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "subnet_cidr" {
-  description = "The Subnet CIDR block for the VPC."
+variable "private_subnet_cidr" {
+  description = "The Private Subnet CIDR block for the VPC."
   default     = "10.0.2.0/24"
+}
+
+variable "public_subnet_cidr" {
+  description = "The Public Subnet CIDR block for the VPC."
+  default     = "10.0.3.0/24"
 }
 
 variable "ec2_tank_instance_prefix" {

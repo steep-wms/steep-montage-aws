@@ -3,10 +3,10 @@ Host *
 
 Host ${ network }
   IdentityFile ${ ssh_key }
-  ProxyCommand ssh ${ ssh_username }@${ bastion_node } -o StrictHostKeyChecking=no -W %h:%p
+  ProxyCommand ssh ubuntu@${ bastion_node } -o StrictHostKeyChecking=no -W %h:%p
 
 Host ${ bastion_node }
   IdentityFile ${ ssh_key }
-  User ${ ssh_username }
   ControlMaster auto
+  ControlPath ~/.ssh/ansible-%r@%h:%p
   ControlPersist 5m
