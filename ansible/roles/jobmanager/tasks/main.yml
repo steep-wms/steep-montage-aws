@@ -1,0 +1,37 @@
+- name: Stop and remove JobManager
+  docker_container:
+    name: jobmanager
+    state: absent
+
+- name: Prune Docker
+  docker_prune:
+    containers: yes
+    images: yes
+    networks: yes
+    volumes: yes
+    builder_cache: yes
+
+- name: Create JobManager
+  docker_container:
+    name: jobmanager
+    image: geocode.igd.fraunhofer.de:4567/jobmanager/jobmanager3-montage:latest
+    restart: yes
+    restart_policy: always
+    pull: yes
+    user: root
+    ports:
+    - "8080:8080"
+    - "5701:5701"
+    - "41187:41187"
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    env:
+      JOBMANAGER_HTTP_HOST: "0.0.0.0"
+      JOBMANAGER_HTTP_BASEPATH: "/jobmanager"
+      JOBMANAGER_CLUSTER_EVENTBUS_PORT: "41187"
+      JOBMANAGER_CLUSTER_EVENTBUS_PUBLICHOST: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      JOBMANAGER_CLUSTER_EVENTBUS_PUBLICPORT: "41187"
+      JOBMANAGER_CLUSTER_HAZELCAST_PUBLICADDRESS: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:5701"
+      JOBMANAGER_CLUSTER_HAZELCAST_PORT: "5701"
+      JOBMANAGER_CLUSTER_HAZELCAST_MEMBERS: "[{%- for host in groups['jobmanager_nodes'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{%- endfor -%}]"
+      JOBMANAGER_CLUSTER_HAZELCAST_TCPENABLED: "true"

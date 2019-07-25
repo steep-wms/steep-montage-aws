@@ -1,0 +1,24 @@
+- name: Install prerequisites
+  apt: 
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    update_cache: yes
+
+- name: Add Docker GPG key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+
+- name: Install Docker
+  apt: name=docker-ce
+
+- name: Login into geocode docker registry
+  docker_login:
+    registry: geocode.igd.fraunhofer.de:4567
+    username: "{{ docker_username }}"
+    password: "{{ docker_password }}"

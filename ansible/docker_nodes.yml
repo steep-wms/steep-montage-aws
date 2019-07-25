@@ -1,0 +1,4 @@
+- hosts: jobmanager_nodes
+  become: true
+  roles:
+  - docker

@@ -1,0 +1,22 @@
+- name: Update repositories cache and install "nginx, prometheus" package
+  apt:
+    name: 
+      - nginx
+    state: latest
+    update_cache: yes
+
+- name: Stop nginx
+  service:
+    name: nginx
+    state: stopped
+
+- name: Create nginx config from template
+  template: 
+    backup: yes
+    src: nginx.conf.j2
+    dest: "{{ nginx_config_file }}"
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted

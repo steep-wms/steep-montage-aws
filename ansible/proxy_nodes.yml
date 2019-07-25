@@ -1,0 +1,4 @@
+- hosts: proxy_nodes
+  become: true
+  roles:
+  - nginx
