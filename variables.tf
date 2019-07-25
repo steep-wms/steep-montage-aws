@@ -18,10 +18,6 @@ variable "ec2_jobmanager_instance_prefix" {
   default = "jobmanager"
 }
 
-variable "ec2_cassandra_instance_prefix" {
-  description = "Name prefix for ec2 instances"
-  default = "cassandra"
-}
 variable "region" {
   default = "eu-central-1"
 }
@@ -48,10 +44,6 @@ variable "jobmanager_instance_type" {
   default = "m5.xlarge"
 }
 
-variable "cassandra_instance_type" {
-  default = "m5.xlarge"
-}
-
 variable "ami_id" {
   # Ubuntu 18.04 LTS - HVM-SSD
   default = "ami-090f10efc254eaf55"
@@ -61,19 +53,7 @@ variable "jobmanager_node_count" {
   default = "3"
 }
 
-variable "cassandra_node_count" {
-  default = "3"
-}
-
-variable "number_of_cassandra_seeds" {
-  default = "2"
-}
-
 variable "jobmanager_disk_size" {
-  default = "10"
-}
-
-variable "cassandra_disk_size" {
   default = "10"
 }
 

@@ -7,7 +7,6 @@ docker_password=${docker_password}
 setupElk=False
 teardownElk=False
 pruneData=True
-cassandra_data_dir=${ cassandra_data_dir }
 
 [proxy_nodes]
 ${ proxy_node }
@@ -15,22 +14,8 @@ ${ proxy_node }
 [proxy_nodes:vars]
 nginx_config_file=/etc/nginx/nginx.conf
 
-[cassandra:children]
-cassandra_nodes
-
-[cassandra:vars]
-cassandra_config_file=/etc/cassandra/cassandra.yaml
-cassandra_cluster_name=tankstore
-use_db_vol=true
-db_vol=/dev/xvdf
-number_of_seeds=${number_of_seeds}
-
-[cassandra_nodes]
-${ cassandra_nodes }
-
 [jobmanager_nodes]
 ${ jobmanager_nodes }
-
 
 [jobmanager_nodes:vars]
 navigator_config_file=/opt/navigator/config.json
