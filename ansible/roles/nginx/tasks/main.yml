@@ -1,4 +1,4 @@
-- name: Update repositories cache and install "nginx, prometheus" package
+- name: Install nginx
   apt:
     name: 
       - nginx
