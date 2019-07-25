@@ -35,3 +35,5 @@
       JOBMANAGER_CLUSTER_HAZELCAST_PORT: "5701"
       JOBMANAGER_CLUSTER_HAZELCAST_MEMBERS: "[{%- for host in groups['jobmanager_nodes'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{%- endfor -%}]"
       JOBMANAGER_CLUSTER_HAZELCAST_TCPENABLED: "true"
+      JOBMANAGER_DB_DRIVER: mongodb
+      JOBMANAGER_DB_URL: mongodb://{%- for host in groups['mongodb_nodes'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{%- endfor -%}/jobmanager

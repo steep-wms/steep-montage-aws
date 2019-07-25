@@ -18,6 +18,11 @@ variable "ec2_jobmanager_instance_prefix" {
   default = "jobmanager"
 }
 
+variable "ec2_mongodb_instance_prefix" {
+  description = "Name prefix for ec2 instances"
+  default = "mongodb"
+}
+
 variable "region" {
   default = "eu-central-1"
 }
@@ -44,6 +49,10 @@ variable "jobmanager_instance_type" {
   default = "m5.xlarge"
 }
 
+variable "mongodb_instance_type" {
+  default = "m5.xlarge"
+}
+
 variable "ami_id" {
   # Ubuntu 18.04 LTS - HVM-SSD
   default = "ami-090f10efc254eaf55"
@@ -53,7 +62,15 @@ variable "jobmanager_node_count" {
   default = "3"
 }
 
+variable "mongodb_node_count" {
+  default = "3"
+}
+
 variable "jobmanager_disk_size" {
+  default = "10"
+}
+
+variable "mongodb_disk_size" {
   default = "10"
 }
 

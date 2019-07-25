@@ -1,2 +1,3 @@
+- import_playbook: mongodb_nodes.yml
 - import_playbook: jobmanager_nodes.yml
 - import_playbook: proxy_nodes.yml

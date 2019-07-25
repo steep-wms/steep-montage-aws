@@ -10,6 +10,12 @@ ${ proxy_node }
 [proxy_nodes:vars]
 nginx_config_file=/etc/nginx/nginx.conf
 
+[mongodb_nodes]
+${ mongodb_nodes }
+
+[mongodb_master]
+${ mongodb_master }
+
 [jobmanager_nodes]
 ${ jobmanager_nodes }
 

@@ -1,0 +1,9 @@
+- hosts: mongodb_nodes
+  become: true
+  roles:
+  - mongodb
+
+- hosts: mongodb_master
+  become: true
+  roles:
+  - mongodb_master

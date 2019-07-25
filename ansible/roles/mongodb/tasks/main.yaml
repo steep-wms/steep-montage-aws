@@ -1,0 +1,36 @@
+---
+# - name: Add local host to hosts file
+#   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+- name: Add repository key
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=9DA31620334BD75D9DCB49F368818C72E52529D4
+
+- name: Add apt repository
+  copy: src=mongodb-org-4.0.list dest=/etc/apt/sources.list.d/mongodb-org-4.0.list
+
+- name: Install MongoDB
+  apt: name=mongodb-org state=present update_cache=yes
+
+- name: Start MongoDB
+  service: state=started name=mongod
+
+- name: Bind to all interfaces
+  lineinfile:
+    dest: /etc/mongod.conf
+    regexp: "^  bindIp.+"
+    line: "  bindIp: 0.0.0.0"
+  notify: restart mongod
+
+- name: Add replication configuration
+  lineinfile:
+    dest: /etc/mongod.conf
+    line: "replication:"
+  notify: restart mongod
+
+- name: Set replica set
+  lineinfile:
+    dest: /etc/mongod.conf
+    insertafter: "replication:"
+    line: "  replSetName: jobmanager"
+  notify: restart mongod
+
+- meta: flush_handlers

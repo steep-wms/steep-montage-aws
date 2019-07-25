@@ -152,6 +152,25 @@ resource "aws_security_group" "ssh" {
   }
 }
 
+resource "aws_ebs_volume" "mongodb" {
+  availability_zone = "${var.region}a"
+  size              = "${var.mongodb_disk_size}"
+  count = "${var.mongodb_node_count}"
+  type = "standard"
+
+  tags = {
+    Name = "${var.ec2_mongodb_instance_prefix}-${count.index}"
+  }
+}
+
+resource "aws_volume_attachment" "mongodb" {
+  device_name = "/dev/xvdf"
+  count = "${var.mongodb_node_count}"
+  volume_id   = "${element(aws_ebs_volume.mongodb.*.id, count.index)}"
+  instance_id = "${element(aws_instance.mongodb.*.id, count.index)}"
+  force_detach = true
+}
+
 resource "aws_instance" "gateway" {
   ami           = "${var.ami_id}"
   instance_type = "${var.gateway_instance_type}"
@@ -174,6 +193,21 @@ resource "aws_instance" "gateway" {
   vpc_security_group_ids = [ "${aws_security_group.http.id}", "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = true
   subnet_id = "${aws_subnet.jobmanager_public_subnet.id}"
+}
+
+resource "aws_instance" "mongodb" {
+  ami           = "${var.ami_id}"
+  instance_type = "${var.mongodb_instance_type}"
+  count = "${var.mongodb_node_count}"
+  key_name = "${var.keypair}"
+  tags = {
+    Name = "${var.ec2_mongodb_instance_prefix}-${count.index}"
+  }
+  # user_data = "${file("files/attach_ebs.sh")}"
+
+  vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
+  associate_public_ip_address = false
+  subnet_id = "${aws_subnet.jobmanager_private_subnet.id}"
 }
 
 resource "aws_instance" "jobmanager" {
