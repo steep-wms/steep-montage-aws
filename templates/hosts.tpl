@@ -28,10 +28,10 @@ number_of_seeds=${number_of_seeds}
 [cassandra_nodes]
 ${ cassandra_nodes }
 
-[tank_nodes]
-${ tank_nodes }
+[jobmanager_nodes]
+${ jobmanager_nodes }
 
 
-[tank_nodes:vars]
+[jobmanager_nodes:vars]
 navigator_config_file=/opt/navigator/config.json
 proxy_node_public_ip=${ bastion_node }

@@ -3,68 +3,68 @@ provider "aws" {
   region = "${var.region}"
 }
 
-resource "aws_vpc" "tank_vpc" {
+resource "aws_vpc" "jobmanager_vpc" {
   cidr_block = "${var.cidr}"
   enable_dns_hostnames = true
   tags = {
-    Name = "Tank VPC"
+    Name = "JobManager VPC"
   }
 }
 
 # Define the public subnet
-resource "aws_subnet" "tank_private_subnet" {
-  vpc_id = "${aws_vpc.tank_vpc.id}"
+resource "aws_subnet" "jobmanager_private_subnet" {
+  vpc_id = "${aws_vpc.jobmanager_vpc.id}"
   cidr_block = "${var.private_subnet_cidr}"
   availability_zone = "${var.region}a"
 
   tags = {
-    Name = "Tank Private Subnet"
+    Name = "JobManager Private Subnet"
   }
 }
 
 # Define the public subnet
-resource "aws_subnet" "tank_public_subnet" {
-  vpc_id = "${aws_vpc.tank_vpc.id}"
+resource "aws_subnet" "jobmanager_public_subnet" {
+  vpc_id = "${aws_vpc.jobmanager_vpc.id}"
   cidr_block = "${var.public_subnet_cidr}"
   availability_zone = "${var.region}a"
 
   tags = {
-    Name = "Tank Public Subnet"
+    Name = "JobManager Public Subnet"
   }
 }
 
 resource "aws_eip" "nat" {
-  depends_on = ["aws_internet_gateway.tank_gateway"]
+  depends_on = ["aws_internet_gateway.jobmanager_gateway"]
   vpc      = true
 
   tags = {
-    Name = "Tank NAT EIP"
+    Name = "JobManager NAT EIP"
   }
 }
 
-resource "aws_nat_gateway" "tank_gateway" {
-  subnet_id = "${aws_subnet.tank_public_subnet.id}"
+resource "aws_nat_gateway" "jobmanager_gateway" {
+  subnet_id = "${aws_subnet.jobmanager_public_subnet.id}"
   allocation_id = "${aws_eip.nat.id}"
 
   tags = {
-    Name = "Tank VPC IGW"
+    Name = "JobManager VPC IGW"
   }
 }
 
-resource "aws_internet_gateway" "tank_gateway" {
-  vpc_id = "${aws_vpc.tank_vpc.id}"
+resource "aws_internet_gateway" "jobmanager_gateway" {
+  vpc_id = "${aws_vpc.jobmanager_vpc.id}"
 
   tags = {
-    Name = "Tank VPC IGW"
+    Name = "JobManager VPC IGW"
   }
 }
 
-resource "aws_route_table" "tank_private_rt" {
-  vpc_id = "${aws_vpc.tank_vpc.id}"
+resource "aws_route_table" "jobmanager_private_rt" {
+  vpc_id = "${aws_vpc.jobmanager_vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.tank_gateway.id}"
+    nat_gateway_id = "${aws_nat_gateway.jobmanager_gateway.id}"
   }
 
   tags = {
@@ -73,17 +73,17 @@ resource "aws_route_table" "tank_private_rt" {
 }
 
 # Assign the route table to the public Subnet
-resource "aws_route_table_association" "tank_private_rt" {
-  subnet_id = "${aws_subnet.tank_private_subnet.id}"
-  route_table_id = "${aws_route_table.tank_private_rt.id}"
+resource "aws_route_table_association" "jobmanager_private_rt" {
+  subnet_id = "${aws_subnet.jobmanager_private_subnet.id}"
+  route_table_id = "${aws_route_table.jobmanager_private_rt.id}"
 }
 
-resource "aws_route_table" "tank_public_rt" {
-  vpc_id = "${aws_vpc.tank_vpc.id}"
+resource "aws_route_table" "jobmanager_public_rt" {
+  vpc_id = "${aws_vpc.jobmanager_vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.tank_gateway.id}"
+    gateway_id = "${aws_internet_gateway.jobmanager_gateway.id}"
   }
 
   tags = {
@@ -92,15 +92,15 @@ resource "aws_route_table" "tank_public_rt" {
 }
 
 # Assign the route table to the public Subnet
-resource "aws_route_table_association" "tank_public_rt" {
-  subnet_id = "${aws_subnet.tank_public_subnet.id}"
-  route_table_id = "${aws_route_table.tank_public_rt.id}"
+resource "aws_route_table_association" "jobmanager_public_rt" {
+  subnet_id = "${aws_subnet.jobmanager_public_subnet.id}"
+  route_table_id = "${aws_route_table.jobmanager_public_rt.id}"
 }
 
 resource "aws_security_group" "http" {
-  name        = "tank-http"
+  name        = "jobmanager-http"
   description = "Allow inbound HTTP traffic"
-  vpc_id      = "${aws_vpc.tank_vpc.id}"
+  vpc_id      = "${aws_vpc.jobmanager_vpc.id}"
 
   ingress {
     from_port   = 80
@@ -117,14 +117,14 @@ resource "aws_security_group" "http" {
   }
 
   tags = {
-    Name = "tank-http"
+    Name = "jobmanager-http"
   }
 }
 
 resource "aws_security_group" "ssh" {
-  name        = "tank-ssh"
+  name        = "jobmanager-ssh"
   description = "Allow inbound SSH traffic"
-  vpc_id      = "${aws_vpc.tank_vpc.id}"
+  vpc_id      = "${aws_vpc.jobmanager_vpc.id}"
 
   ingress {
     from_port   = 22
@@ -148,7 +148,7 @@ resource "aws_security_group" "ssh" {
   }
 
   tags = {
-    Name = "tank-ssh"
+    Name = "jobmanager-ssh"
   }
 }
 
@@ -176,7 +176,7 @@ resource "aws_instance" "gateway" {
   instance_type = "${var.gateway_instance_type}"
   key_name = "${var.keypair}"
   tags = {
-    Name = "tank-gateway"
+    Name = "jobmanager-gateway"
   }
   
   root_block_device {
@@ -192,21 +192,21 @@ resource "aws_instance" "gateway" {
 
   vpc_security_group_ids = [ "${aws_security_group.http.id}", "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = true
-  subnet_id = "${aws_subnet.tank_public_subnet.id}"
+  subnet_id = "${aws_subnet.jobmanager_public_subnet.id}"
 }
 
-resource "aws_instance" "tank" {
+resource "aws_instance" "jobmanager" {
   ami           = "${var.ami_id}"
-  instance_type = "${var.tank_instance_type}"
-  count = "${var.tank_node_count}"
+  instance_type = "${var.jobmanager_instance_type}"
+  count = "${var.jobmanager_node_count}"
   key_name = "${var.keypair}"
   tags = {
-    Name = "${var.ec2_tank_instance_prefix}-${count.index}"
+    Name = "${var.ec2_jobmanager_instance_prefix}-${count.index}"
   }
 
   root_block_device {
     volume_type = "standard"
-    volume_size = "${var.tank_disk_size}"
+    volume_size = "${var.jobmanager_disk_size}"
     delete_on_termination = true
   }
 
@@ -217,7 +217,7 @@ resource "aws_instance" "tank" {
 
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
-  subnet_id = "${aws_subnet.tank_private_subnet.id}"
+  subnet_id = "${aws_subnet.jobmanager_private_subnet.id}"
 }
 
 resource "aws_instance" "cassandra" {
@@ -232,5 +232,5 @@ resource "aws_instance" "cassandra" {
   
   vpc_security_group_ids = [ "${aws_security_group.ssh.id}" ]
   associate_public_ip_address = false
-  subnet_id = "${aws_subnet.tank_private_subnet.id}"
+  subnet_id = "${aws_subnet.jobmanager_private_subnet.id}"
 }
