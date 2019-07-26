@@ -16,6 +16,10 @@ ${ mongodb_nodes }
 [mongodb_master]
 ${ mongodb_master }
 
+[mongodb_nodes:vars]
+mongodb_data_volume=${ mongodb_data_volume }
+mongodb_data_dir=${ mongodb_data_dir }
+
 [jobmanager_nodes]
 ${ jobmanager_nodes }
 

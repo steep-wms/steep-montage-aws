@@ -13,6 +13,25 @@
 - name: Start MongoDB
   service: state=started name=mongod
 
+- name: Create filesystem
+  filesystem:
+    fstype: xfs
+    dev: "{{ mongodb_data_volume }}"
+
+- name: Mount device by label
+  mount:
+    path: "{{ mongodb_data_dir | dirname }}"
+    src: "{{ mongodb_data_volume }}"
+    fstype: xfs
+    state: mounted
+    opts: defaults,nofail,noatime,nodiratime
+
+- name: Create data directory
+  file:
+    path: "{{ mongodb_data_dir }}"
+    owner: mongodb
+    state: directory
+
 - name: Bind to all interfaces
   lineinfile:
     dest: /etc/mongod.conf
@@ -31,6 +50,13 @@
     dest: /etc/mongod.conf
     insertafter: "replication:"
     line: "  replSetName: jobmanager"
+  notify: restart mongod
+
+- name: Set data directory
+  lineinfile:
+    dest: /etc/mongod.conf
+    regexp: "^  dbPath.+"
+    line: "  dbPath: {{ mongodb_data_dir }}"
   notify: restart mongod
 
 - meta: flush_handlers
