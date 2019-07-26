@@ -181,7 +181,7 @@ resource "aws_instance" "gateway" {
   
   root_block_device {
     volume_type = "standard"
-    volume_size = 50
+    volume_size = "${var.gateway_disk_size}"
     delete_on_termination = true
   }
 

@@ -70,6 +70,10 @@ variable "jobmanager_disk_size" {
   default = "10"
 }
 
+variable "gateway_disk_size" {
+  default = "10"
+}
+
 variable "mongodb_disk_size" {
   default = "10"
 }
