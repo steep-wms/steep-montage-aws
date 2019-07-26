@@ -1,0 +1,25 @@
+- name: Add GlusterFS apt repository
+  apt_repository:
+    repo: ppa:gluster/glusterfs-4.1
+
+- name: Install GlusterFS
+  apt:
+    name:
+      - glusterfs-client
+    state: present
+    update_cache: yes
+
+- name: Create GlusterFS mount directory
+  file:
+    path: "/data"
+    owner: root
+    state: directory
+    mode: "0777"
+
+- name: Mount GlusterFS
+  mount:
+    name: "/data"
+    src: "{{ hostvars[groups['glusterfs_nodes'][0]].ansible_default_ipv4['address'] }}:/glusterfs"
+    fstype: glusterfs
+    opts: "defaults,_netdev"
+    state: mounted

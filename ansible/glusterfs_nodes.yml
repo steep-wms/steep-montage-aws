@@ -1,0 +1,4 @@
+- hosts: glusterfs_nodes
+  become: true
+  roles:
+  - glusterfs

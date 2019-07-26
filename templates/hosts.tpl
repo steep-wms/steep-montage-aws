@@ -25,3 +25,11 @@ ${ jobmanager_nodes }
 
 [jobmanager_nodes:vars]
 proxy_node_public_ip=${ bastion_node }
+
+[glusterfs_nodes]
+${ jobmanager_nodes }
+
+[glusterfs_nodes:vars]
+glusterfs_brick_volume=${ glusterfs_brick_volume }
+glusterfs_brick_dir=${ glusterfs_brick_dir }
+glusterfs_replicas=${ glusterfs_replicas }

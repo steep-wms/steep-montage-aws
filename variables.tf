@@ -59,15 +59,25 @@ variable "ami_id" {
 }
 
 variable "jobmanager_node_count" {
-  default = "3"
+  # must be a multiple of 'glusterfs_replicas'
+  default = "4"
+}
+
+variable "glusterfs_replicas" {
+  default = "2"
 }
 
 variable "mongodb_node_count" {
-  default = "3"
+  default = "1"
 }
 
 variable "jobmanager_disk_size" {
   default = "10"
+}
+
+variable "glusterfs_disk_size" {
+  # total size will be jobmanager_node_count * glusterfs_disk_size / glusterfs_replicas
+  default = "100"
 }
 
 variable "gateway_disk_size" {

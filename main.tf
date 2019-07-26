@@ -171,6 +171,25 @@ resource "aws_volume_attachment" "mongodb" {
   force_detach = true
 }
 
+resource "aws_ebs_volume" "glusterfs" {
+  availability_zone = "${var.region}a"
+  size              = "${var.glusterfs_disk_size}"
+  count = "${var.jobmanager_node_count}"
+  type = "standard"
+
+  tags = {
+    Name = "${var.ec2_jobmanager_instance_prefix}-${count.index}"
+  }
+}
+
+resource "aws_volume_attachment" "glusterfs" {
+  device_name = "/dev/xvdf"
+  count = "${var.jobmanager_node_count}"
+  volume_id   = "${element(aws_ebs_volume.glusterfs.*.id, count.index)}"
+  instance_id = "${element(aws_instance.jobmanager.*.id, count.index)}"
+  force_detach = true
+}
+
 resource "aws_instance" "gateway" {
   ami           = "${var.ami_id}"
   instance_type = "${var.gateway_instance_type}"

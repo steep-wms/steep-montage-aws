@@ -1,4 +1,5 @@
 - hosts: proxy_nodes
   become: true
   roles:
+  - glusterfs_client
   - nginx

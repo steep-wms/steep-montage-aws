@@ -6,6 +6,9 @@ data  "template_file" "aws" {
         mongodb_master = aws_instance.mongodb.0.private_ip
         mongodb_data_volume = aws_volume_attachment.mongodb.0.device_name
         mongodb_data_dir = "/opt/data/mongodb"
+        glusterfs_brick_volume = aws_volume_attachment.glusterfs.0.device_name
+        glusterfs_brick_dir = "/opt/data/brick"
+        glusterfs_replicas = var.glusterfs_replicas
         proxy_node = aws_instance.gateway.public_dns
         docker_username = var.docker_username
         docker_password = var.docker_password

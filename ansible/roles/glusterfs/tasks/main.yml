@@ -1,0 +1,63 @@
+- name: Add GlusterFS apt repository
+  apt_repository:
+    repo: ppa:gluster/glusterfs-4.1
+
+- name: Install GlusterFS
+  apt:
+    name:
+      - glusterfs-server
+      - glusterfs-client
+    state: present
+    update_cache: yes
+
+- name: Start GlusterFS
+  service:
+    state: started
+    name: glusterd
+
+- name: Create filesystem
+  filesystem:
+    fstype: xfs
+    dev: "{{ glusterfs_brick_volume }}"
+
+- name: Mount device by label
+  mount:
+    path: "{{ glusterfs_brick_dir | dirname }}"
+    src: "{{ glusterfs_brick_volume }}"
+    fstype: xfs
+    state: mounted
+    opts: defaults,nofail,noatime,nodiratime
+
+- name: Create brick directory
+  file:
+    path: "{{ glusterfs_brick_dir }}"
+    owner: root
+    state: directory
+    mode: "0777"
+
+- name: Create GlusterFS volume
+  gluster_volume:
+    state: present
+    name: glusterfs
+    bricks: "{{ glusterfs_brick_dir }}"
+    replicas: "{{ glusterfs_replicas }}"
+    # disperses: "{{ groups['glusterfs_nodes'] | length }}"
+    cluster: "{% for item in groups['glusterfs_nodes'] -%}{{ hostvars[item]['ip']|default(hostvars[item].ansible_default_ipv4['address']) }}{% if not loop.last %},{% endif %}{%- endfor %}"
+  run_once: true
+  # TODO remove this once https://github.com/ansible/ansible/issues/56844 is fixed
+  ignore_errors: true
+
+- name: Create mount directory
+  file:
+    path: "/data"
+    owner: root
+    state: directory
+    mode: "0777"
+
+- name: Mount GlusterFS
+  mount:
+    name: "/data"
+    src: "{{ ip|default(ansible_default_ipv4['address']) }}:/glusterfs"
+    fstype: glusterfs
+    opts: "defaults,_netdev"
+    state: mounted
