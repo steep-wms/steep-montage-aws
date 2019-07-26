@@ -25,7 +25,9 @@
     - "41187:41187"
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+    - /data:/data
     env:
+      JOBMANAGER_TMPPATH: /data/out
       JOBMANAGER_HTTP_HOST: "0.0.0.0"
       JOBMANAGER_HTTP_BASEPATH: "/jobmanager"
       JOBMANAGER_CLUSTER_EVENTBUS_PORT: "41187"
