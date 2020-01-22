@@ -44,8 +44,6 @@
     # disperses: "{{ groups['glusterfs_nodes'] | length }}"
     cluster: "{% for item in groups['glusterfs_nodes'] -%}{{ hostvars[item]['ip']|default(hostvars[item].ansible_default_ipv4['address']) }}{% if not loop.last %},{% endif %}{%- endfor %}"
   run_once: true
-  # TODO remove this once https://github.com/ansible/ansible/issues/56844 is fixed
-  ignore_errors: true
 
 - name: Create mount directory
   file:
