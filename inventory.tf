@@ -17,6 +17,6 @@ data  "template_file" "aws" {
 }
 
 resource "local_file" "aws_file" {
-  content  = "${data.template_file.aws.rendered}"
+  content  = data.template_file.aws.rendered
   filename = "./ansible/hosts"
 }

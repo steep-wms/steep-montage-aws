@@ -9,6 +9,6 @@ data  "template_file" "ssh" {
 }
 
 resource "local_file" "ssh_file" {
-  content  = "${data.template_file.ssh.rendered}"
+  content  = data.template_file.ssh.rendered
   filename = "./ssh_config"
 }
