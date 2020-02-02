@@ -3,3 +3,4 @@
   roles:
   - glusterfs_client
   - nginx
+  - docker
