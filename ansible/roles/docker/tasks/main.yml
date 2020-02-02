@@ -16,9 +16,3 @@
 
 - name: Install Docker
   apt: name=docker-ce
-
-- name: Login into geocode docker registry
-  docker_login:
-    registry: geocode.igd.fraunhofer.de:4567
-    username: "{{ docker_username }}"
-    password: "{{ docker_password }}"

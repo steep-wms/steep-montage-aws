@@ -10,8 +10,6 @@ data  "template_file" "aws" {
         glusterfs_brick_dir = "/opt/data/brick"
         glusterfs_replicas = var.glusterfs_replicas
         proxy_node = aws_instance.gateway.public_dns
-        docker_username = var.docker_username
-        docker_password = var.docker_password
         bastion_node = aws_instance.gateway.public_dns
     }
 }

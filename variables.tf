@@ -87,11 +87,3 @@ variable "gateway_disk_size" {
 variable "mongodb_disk_size" {
   default = "10"
 }
-
-variable "docker_username" {
-  default = ""
-}
-
-variable "docker_password" {
-  default = ""
-}

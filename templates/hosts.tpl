@@ -1,8 +1,6 @@
 [all:vars]
 ansible_user=ubuntu
 ansible_python_interpreter=/usr/bin/python3
-docker_username=${docker_username}
-docker_password=${docker_password}
 
 [proxy_nodes]
 ${ proxy_node }

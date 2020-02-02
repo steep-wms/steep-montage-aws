@@ -14,7 +14,7 @@
 - name: Create Steep
   docker_container:
     name: steep
-    image: geocode.igd.fraunhofer.de:4567/steep/steep-montage:latest
+    image: steep/steep-montage:latest
     restart: yes
     restart_policy: always
     pull: yes
