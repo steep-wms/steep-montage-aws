@@ -1,6 +1,6 @@
 ---
 - name: Initialize replica set
-  command: "mongo --eval 'rs.initiate({_id : \"jobmanager\", members: [{_id: 0, host: \"{{ ansible_default_ipv4.address }}:27017\"}]});'"
+  command: "mongo --eval 'rs.initiate({_id : \"steep\", members: [{_id: 0, host: \"{{ ansible_default_ipv4.address }}:27017\"}]});'"
 - name: Add replica set members
   command: "mongo --eval 'rs.add(\"{{ hostvars[item].ansible_default_ipv4.address }}\");'"
   with_items: "{{ groups['mongodb_nodes'] }}"

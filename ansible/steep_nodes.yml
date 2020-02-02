@@ -1,4 +1,4 @@
 - hosts: steep_nodes
   become: true
   roles:
-  - docker
+  - steep

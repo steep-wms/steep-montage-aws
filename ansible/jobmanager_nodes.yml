@@ -1,4 +1,0 @@
-- hosts: jobmanager_nodes
-  become: true
-  roles:
-  - jobmanager

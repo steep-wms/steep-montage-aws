@@ -1,7 +1,7 @@
 data  "template_file" "aws" {
     template = "${file("./templates/hosts.tpl")}"
     vars = {
-        jobmanager_nodes = "${join("\n", aws_instance.jobmanager.*.private_ip)}"
+        steep_nodes = "${join("\n", aws_instance.steep.*.private_ip)}"
         mongodb_nodes = "${join("\n", aws_instance.mongodb.*.private_ip)}"
         mongodb_master = aws_instance.mongodb.0.private_ip
         mongodb_data_volume = aws_volume_attachment.mongodb.0.device_name

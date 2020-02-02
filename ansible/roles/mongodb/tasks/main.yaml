@@ -49,7 +49,7 @@
   lineinfile:
     dest: /etc/mongod.conf
     insertafter: "replication:"
-    line: "  replSetName: jobmanager"
+    line: "  replSetName: steep"
   notify: restart mongod
 
 - name: Set data directory

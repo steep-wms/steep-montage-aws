@@ -20,14 +20,14 @@ ${ mongodb_master }
 mongodb_data_volume=${ mongodb_data_volume }
 mongodb_data_dir=${ mongodb_data_dir }
 
-[jobmanager_nodes]
-${ jobmanager_nodes }
+[steep_nodes]
+${ steep_nodes }
 
-[jobmanager_nodes:vars]
+[steep_nodes:vars]
 proxy_node_public_ip=${ bastion_node }
 
 [glusterfs_nodes]
-${ jobmanager_nodes }
+${ steep_nodes }
 
 [glusterfs_nodes:vars]
 glusterfs_brick_volume=${ glusterfs_brick_volume }

@@ -1,0 +1,41 @@
+- name: Stop and remove Steep
+  docker_container:
+    name: steep
+    state: absent
+
+- name: Prune Docker
+  docker_prune:
+    containers: yes
+    images: yes
+    networks: yes
+    volumes: yes
+    builder_cache: yes
+
+- name: Create Steep
+  docker_container:
+    name: steep
+    image: geocode.igd.fraunhofer.de:4567/steep/steep-montage:latest
+    restart: yes
+    restart_policy: always
+    pull: yes
+    user: root
+    ports:
+    - "8080:8080"
+    - "5701:5701"
+    - "41187:41187"
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /data:/data
+    env:
+      STEEP_TMPPATH: /data/out
+      STEEP_HTTP_HOST: "0.0.0.0"
+      STEEP_HTTP_BASEPATH: "/steep"
+      STEEP_CLUSTER_EVENTBUS_PORT: "41187"
+      STEEP_CLUSTER_EVENTBUS_PUBLICHOST: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      STEEP_CLUSTER_EVENTBUS_PUBLICPORT: "41187"
+      STEEP_CLUSTER_HAZELCAST_PUBLICADDRESS: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:5701"
+      STEEP_CLUSTER_HAZELCAST_PORT: "5701"
+      STEEP_CLUSTER_HAZELCAST_MEMBERS: "[{%- for host in groups['steep_nodes'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{%- endfor -%}]"
+      STEEP_CLUSTER_HAZELCAST_TCPENABLED: "true"
+      STEEP_DB_DRIVER: mongodb
+      STEEP_DB_URL: mongodb://{%- for host in groups['mongodb_nodes'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{%- endfor -%}/steep
