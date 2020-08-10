@@ -58,7 +58,7 @@ deployed software:
 
 ![Infrastructure](infrastructure.svg "Infrastructure")
 
-### Step 5: Submit the workflow
+## Step 5: Submit the workflow
 
 Submit one of the parallel workflows from the
 [steep-montage repository](https://github.com/steep-wms/steep-montage). For
@@ -78,7 +78,7 @@ until it is completed.
 
     open http://$GATEWAY_IP/steep
 
-### Step 6: Download results
+## Step 6: Download results
 
 After the workflow has finished, you can download the final mosaic from Gluster
 FS through the gateway node:
@@ -87,13 +87,13 @@ FS through the gateway node:
 
 It should look like the [image below](#final-result).
 
-### Step 7: Destroy your infrastructure
+## Step 7: Destroy your infrastructure
 
 **IMPORTANT:** Do not forget to destroy your infrastructure after the experiment:
 
     terraform destroy
 
-### Final result
+## Final result
 
 ![Carina Nebula](https://raw.githubusercontent.com/steep-wms/steep-montage/master/result_rgb.jpg "Carina Nebula")
 
