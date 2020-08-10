@@ -58,39 +58,15 @@ deployed software:
 
 ![Infrastructure](infrastructure.svg "Infrastructure")
 
-### Step 5: Download test data
-
-Before you can run the workflow, you need to download some data. The
-`download_data.sh` script from the
-[steep-montage repository](https://github.com/steep-wms/steep-montage) fetches
-files for a 2.8 square degrees mosaic of 2MASS images (J-, H-, and K-band)
-centred on NGC 3372 ([Carina Nebula](https://en.wikipedia.org/wiki/Carina_Nebula)).
-
-Run the following commands to log in to the gateway instance of your new
-infrastructure and download the data to the Gluster filesystem, which is
-mounted to `/data`:
-
-    export GATEWAY_IP=$(terraform output gateway_ip)
-    ssh ubuntu@$GATEWAY_IP
-
-    mkdir /data/montage
-    sudo docker run -it -v /data/montage:/download/data \
-      --entrypoint /download/download_data.sh steep/steep-montage
-
-*NOTE*: The dataset has a total size of about *1.3 GB*. The download will take
-a few minutes on AWS.
-
-Leave the gateway instance with:
-
-    exit
-
-### Step 6: Submit the workflow
+### Step 5: Submit the workflow
 
 Submit one of the parallel workflows from the
 [steep-montage repository](https://github.com/steep-wms/steep-montage). For
 example, use the following command to submit `montage_parallel_rgb.yaml`, which
-calculates an RGB image based on the 2MASS K-, H-, and J-bands:
+calculates a 2.8 square degrees RGB mosaic of 2MASS images (J-, H-, and K-band)
+centred on NGC 3372 ([Carina Nebula](https://en.wikipedia.org/wiki/Carina_Nebula)).
 
+    export GATEWAY_IP=$(terraform output gateway_ip)
     curl -X POST http://$GATEWAY_IP/steep/workflows \
       --data-binary @../steep-montage/workflow/montage_parallel_rgb.yaml
 
@@ -102,7 +78,7 @@ until it is completed.
 
     open http://$GATEWAY_IP/steep
 
-### Step 7: Download results
+### Step 6: Download results
 
 After the workflow has finished, you can download the final mosaic from Gluster
 FS through the gateway node:
@@ -111,7 +87,7 @@ FS through the gateway node:
 
 It should look like the [image below](#final-result).
 
-### Step 8: Destroy your infrastructure
+### Step 7: Destroy your infrastructure
 
 **IMPORTANT:** Do not forget to destroy your infrastructure after the experiment:
 
